@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList();
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+@{
+    string culture = "", uiculture = "";
+    if (Context.Request.QueryString.HasValue)
+    {
+        string url = Context.Request.QueryString.Value;
+        culture = Context.Request.Query["culture"];
+        uiculture = Context.Request.Query["ui-culture"];
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Uygulama</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="css/modern-business.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Uygulama</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <partial name="_LoginPartial" />
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>*@
+
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-danger fixed-top">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">@Localizer["tarif"]</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <partial name="_LoginPartial" />
+
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="AnaYemekler" asp-action="Index">@Localizer["ana"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Tatlilar" asp-action="Index">@Localizer["tatli"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Corbalar" asp-action="Index">@Localizer["corba"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Salatalar" asp-action="Index">@Localizer["salata"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="PratikYemekler" asp-action="Index">@Localizer["pratik"]</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <!-- Navbar Search-->
+            @*<form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Nefis yemekler arayınız..." aria-label="Search" aria-describedby="basic-addon2" />
+                <div class="input-group-append">
+                    <button class="btn btn-danger" type="button"><i class="fas fa-search">Ara</i></button>
+                </div>
+            </div>
+        </form>*@
+            <!-- Navbar-->
+            <ul class="navbar-nav ml-auto ml-md-0 bg-danger">
+                <li class="nav-item dropdown bg-danger">
+
+                    <select class="dropdown-item bg-danger text-light" onchange="SetCulture(this.value)" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems">
+                    </select>
+                </li>
+
+            </ul>
+            @if (User.IsInRole("Admin"))
+            { 
+                <ul class="navbar-nav ml-auto ml-md-0 bg-danger">
+                    <li class="nav-item dropdown bg-danger">
+                        <a class="nav-link dropdown-toggle bg-danger" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user fa-fw"></i>Admin<a />
+                            <div class="dropdown-menu dropdown-menu-right bg-danger text-light" aria-labelledby="userDropdown">
+
+                                <a class="dropdown-item text-light" asp-area="" asp-controller="Kategori" asp-action="Index">@Localizer["kategori"]</a>
+                                <a class="dropdown-item text-light" asp-area="" asp-controller="Malzeme" asp-action="Index">@Localizer["malzeme"]</a>
+                                <a class="dropdown-item text-light" asp-area="" asp-controller="Yemek" asp-action="Index">@Localizer["yemek"]</a>
+                                <a class="dropdown-item text-light" asp-area="" asp-controller="YemekMalzeme" asp-action="Index">@Localizer["ym"]</a>
+                                <a class="dropdown-item text-light" asp-area="" asp-controller="Role" asp-action="Index">Role</a>
+                            </div>
+                    </li>
+
+
+                </ul>
+             }
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer bg-danger text-light">
+        <div class="container">
+            &copy; 2020 - Yemek Tarifi
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+
+
+</body>
+</html>
+
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>
+
+

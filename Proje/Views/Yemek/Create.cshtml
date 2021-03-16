@@ -1,0 +1,84 @@
+﻿@model Proje.Models.Yemek
+
+@{
+    ViewData["Title"] = "Create";
+}
+@if (User.IsInRole("Admin"))
+{
+    <h1>Create</h1>
+
+    <h4>Yemek</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Adi" class="control-label"></label>
+                    <input asp-for="Adi" class="form-control" />
+                    <span asp-validation-for="Adi" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Tarif" class="control-label"></label>
+                    <input asp-for="Tarif" class="form-control" />
+                    <span asp-validation-for="Tarif" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Resim" class="control-label"></label>
+                    @*<input asp-for="Resim" class="form-control" />*@
+                    <input type="file" class="form-control" name="file" />
+                    <span asp-validation-for="Resim" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="KacKisilik" class="control-label"></label>
+                    <input asp-for="KacKisilik" class="form-control" />
+                    <span asp-validation-for="KacKisilik" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HazirlikSuresi" class="control-label"></label>
+                    <input asp-for="HazirlikSuresi" class="form-control" />
+                    <span asp-validation-for="HazirlikSuresi" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PisirmeSuresi" class="control-label"></label>
+                    <input asp-for="PisirmeSuresi" class="form-control" />
+                    <span asp-validation-for="PisirmeSuresi" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="YuklemeTarihi" class="control-label"></label>
+                    <input asp-for="YuklemeTarihi" class="form-control" />
+                    <span asp-validation-for="YuklemeTarihi" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="KategoriId" class="control-label"></label>
+                    <select asp-for="KategoriId" class="form-control" asp-items="ViewBag.KategoriId"></select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Index">Yetkili Değilsiniz!!!</a>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>

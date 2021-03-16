@@ -1,0 +1,91 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    var roles = (List<IdentityRole>)ViewData["roles"];
+}
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h4>Yeni Hesap Oluştur</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Ad"></label>
+                <input asp-for="Input.Ad" class="form-control" />
+                <span asp-validation-for="Input.Ad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Soyad"></label>
+                <input asp-for="Input.Soyad" class="form-control" />
+                <span asp-validation-for="Input.Soyad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.DogumTarihi"></label>
+                <input asp-for="Input.DogumTarihi" class="form-control" />
+                <span asp-validation-for="Input.DogumTarihi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="Input.Name"></label>
+
+                <select asp-for="Input.Name" class="form-control" asp-items='new SelectList(roles, "Id", "Name")'></select>
+                
+                @*@@if (User.IsInRole("Admin")*@
+                            <span asp-validation-for="Input.Name" class="text-danger"></span>
+
+                        </div>
+
+
+
+                    <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+                </form>
+            </div>
+            <div class="col-md-6 col-md-offset-2">
+                <section>
+
+                    <hr />
+                    @{
+                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                <div>
+                                    <p>
+                                        @foreach (var provider in Model.ExternalLogins)
+                                        {
+                                            <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                        }
+                                    </p>
+                                </div>
+                            </form>
+                        }
+                    }
+                </section>
+            </div>
+        </div>
+
+        @section Scripts {
+            <partial name="_ValidationScriptsPartial" />
+        }

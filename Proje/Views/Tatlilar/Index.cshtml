@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList();
+}
+@model IEnumerable<Proje.Models.YemekDTO>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+@{
+    string culture = "", uiculture = "";
+    if (Context.Request.QueryString.HasValue)
+    {
+        string url = Context.Request.QueryString.Value;
+        culture = Context.Request.Query["culture"];
+        uiculture = Context.Request.Query["ui-culture"];
+    }
+}
+
+<div class="container">
+
+    <h1 class="mt-4 mb-3">
+        @Localizer["uyg"]
+    </h1>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li class="breadcrumb-item active">@Localizer["uyg"]</li>
+    </ol>
+
+
+    <div class="container">
+        @foreach (var item in Model)
+        {
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="#">
+                                <img src="@item.Resim" class="d-block w-100 h-200">
+                            </a>
+                        </div>
+                        <div class="col-lg-6" asp-route-culture="@culture" asp-route-ui-culture="@uiculture">
+                            <h2 class="card-title">@item.YemekBaslıgı</h2>
+                            <p>Malzemeler:</p>
+                            <p class="card-text"><ul>@Html.Raw(@item.Malzemeler)</ul></p>
+                            
+                            <a asp-controller="Tatlilar" asp-action="Detay" asp-route-id="@item.YemekId" class="btn btn-primary">@Localizer["daha"] &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    @item.YuklemeTarihi
+
+                </div>
+            </div>
+        }
+    </div>
+
+    <ul class="pagination justify-content-center mb-4">
+        <li class="page-item">
+            <a class="page-link" href="#">&larr; @Localizer["eski"]</a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#">@Localizer["yeni"] &rarr;</a>
+        </li>
+    </ul>
+
+</div>
+
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>

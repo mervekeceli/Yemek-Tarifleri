@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList();
+}
+
+@model IEnumerable<Proje.Models.YemekDTO>
+
+
+<div asp-validation-summary="All" class="text-danger">
+    @{
+        string culture = "", uiculture = "";
+        if (Context.Request.QueryString.HasValue)
+        {
+            string url = Context.Request.QueryString.Value;
+            culture = Context.Request.Query["culture"];
+            uiculture = Context.Request.Query["ui-culture"];
+        }
+    }
+</div>
+
+
+
+<!-- Page Content -->
+<div class="container">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li class="breadcrumb-item active">@Localizer["uyg"]</li>
+    </ol>
+
+    @foreach (var item in Model)
+    {
+        <h1>@item.YemekBaslıgı</h1>
+
+        <table class="table table-hover bg-danger text-light">
+            <thead>
+                <tr>
+                    <th scope="col">Kaç Kişilik</th>
+                    <th scope="col">Hazırlık Süresi</th>
+                    <th scope="col">Pişirme Süresi</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-active ">
+                    <td>@item.KacKisilik</td>
+                    <td>@item.HazirlikSuresi dk.</td>
+                    <td>@item.PisirmeSuresi dk.</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+
+            <div class="col-md-8">
+                <img src="@item.Resim" class="d-block w-100 h-200">
+            </div>
+
+            <div class="col-md-4">
+                
+                <h3 class="my-3">Malzemeler:</h3>
+
+                <ul>@Html.Raw(@item.Malzemeler)</ul>
+
+            </div>
+            <br />
+            <h2>Tarifi:</h2>
+            <p>@item.Tarifi</p>
+
+        </div>
+    }
+</div>
+
+<!-- /.row -->
+
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>

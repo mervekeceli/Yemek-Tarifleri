@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Proje.Models.YemekMalzeme>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@if (User.IsInRole("Admin"))
+{
+    <h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MalzemeMiktari)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Yemek)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Malzeme)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MalzemeMiktari)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Yemek.Adi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Malzeme.MalzemeAdi)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <a asp-action="Index">Yetkili Değilsiniz!!!</a>
+    </div>
+}
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>

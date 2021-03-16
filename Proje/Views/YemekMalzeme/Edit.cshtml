@@ -1,0 +1,60 @@
+﻿@model Proje.Models.YemekMalzeme
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@if (User.IsInRole("Admin"))
+{
+    <h1>Edit</h1>
+
+    <h4>YemekMalzeme</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="YemekId" class="control-label"></label>
+                    <select asp-for="YemekId" class="form-control" asp-items="ViewBag.YemekId"></select>
+                    <span asp-validation-for="YemekId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MalzemeId" class="control-label"></label>
+                    <select asp-for="MalzemeId" class="form-control" asp-items="ViewBag.MalzemeId"></select>
+                    <span asp-validation-for="MalzemeId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MalzemeMiktari" class="control-label"></label>
+                    <input asp-for="MalzemeMiktari" class="form-control" />
+                    <span asp-validation-for="MalzemeMiktari" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Index">Yetkili Değilsiniz!!!</a>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    function SetCulture(selectedValue) {
+        alert(selectedValue);
+        var url = window.location.href.split('?')[0];
+        var culture = "?culture=" + selectedValue + "&ui-culture=" + selectedValue;
+        window.location.href = url + culture;
+    }
+</script>
